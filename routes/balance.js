@@ -3,11 +3,11 @@ var router = express.Router();
 var fire = require('../config/firebase');
 var bodyparser = require('body-parser');
 var db = fire.firestore();
-var userId = "Yq4R5KCUaQOjf8e5qP3rmBVdutB3";
-
 router.use(bodyparser.json());
 
 router.get('/current', async function(req, res, next){
+  const userId = req.header('UserId');
+
   try{
     let topup = 0, withdraw = 0;
     const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("balances").get();
@@ -40,6 +40,8 @@ router.get('/current', async function(req, res, next){
 });
 
 router.get('/history', async function(req, res, next){
+  const userId = req.header('UserId');
+
   try{
     let result = [];
     const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("balances").get();
@@ -65,6 +67,7 @@ router.get('/history', async function(req, res, next){
 });
 
 router.post('/', async function(req, res, next){
+  const userId = req.header('UserId');
   try{
     const balance = {
       amount: req.body.amount,
