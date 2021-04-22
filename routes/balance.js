@@ -44,7 +44,7 @@ router.get('/current', async function(req, res, next){
         }
       }
       result.transaction['transactionBuy'] = transactionBuy;
-      result.transaction['trasactionSell'] = transactionSell;
+      result.transaction['transactionSell'] = transactionSell;
     }
   });
 
