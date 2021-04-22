@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var fire = require('../config/firebase');
 var bodyparser = require('body-parser');
+var request = require('request-promise');
 var db = fire.firestore();
 
 router.use(bodyparser.json());
