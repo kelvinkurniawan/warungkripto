@@ -32,7 +32,7 @@ router.get('/current', async function(req, res, next){
     if(error){
       console.log(error);
     }else{
-      for(let doc of body){
+      for(let doc of body.data){
         if(doc.transaction.type == "buy"){
           tempTransactionBuy = doc.transaction.amount * doc.transaction.price;
           transactionBuy += tempTransactionBuy;
