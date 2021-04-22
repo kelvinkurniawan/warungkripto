@@ -43,11 +43,8 @@ router.get('/current', async function(req, res, next){
           transactionSell += tempTransactionSell;
         }
       }
-      tempTransaction = {
-        transactionBuy,
-        transactionSell,
-      }
-      result.transaction.push(tempTransaction);
+      result.transaction.push(transactionBuy);
+      result.transaction.push(transactionSell);
     }
   });
 
