@@ -29,6 +29,7 @@ router.get('/api/v1', function(req, res, next) {
       };
       for(let key in body.data){
         let data = {
+          id: body.data[key].id,
           coinName: body.data[key].name,
           symbol: body.data[key].symbol,
           lastUpdate: body.data[key].last_updated,
@@ -76,6 +77,7 @@ router.get("/api/v1/single", function(req, res){
       };
 
       let data = {
+        id: body.data[id].id,
         coinName: body.data[id].name,
           symbol: body.data[id].symbol,
           lastUpdate: body.data[id].last_updated,
