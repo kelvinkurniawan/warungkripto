@@ -44,7 +44,10 @@ router.get('/history', async function(req, res, next){
   const userId = req.header('UserId');
 
   try{
-    let result = [];
+    let result = {
+      status : "success",
+      data : []
+    };
     const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
     const docs = balanceQuerySnapshot.docs;
 
@@ -54,7 +57,7 @@ router.get('/history', async function(req, res, next){
         transaction: doc.data()
       }
 
-      result.push(item);
+      result.data.push(item);
     }
 
     res.status(201).json(result);
