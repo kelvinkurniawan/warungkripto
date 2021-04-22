@@ -18,7 +18,7 @@ router.get('/current', async function(req, res, next){
   withdraw = 0;
   
   result = {
-    transaction : []
+    transaction : {}
   }
 
   await request({
@@ -43,8 +43,8 @@ router.get('/current', async function(req, res, next){
           transactionSell += tempTransactionSell;
         }
       }
-      result.transaction.push(transactionBuy);
-      result.transaction.push(transactionSell);
+      result.transaction['transactionBuy'] = transactionBuy;
+      result.transaction['trasactionSell'] = transactionSell;
     }
   });
 
