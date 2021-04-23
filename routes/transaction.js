@@ -108,7 +108,7 @@ router.post('/', async function(req, res, next){
 
 router.get('/assets_in_single', async function(req, res, next){
   const userId = req.header('UserId');
-  const coinId = 1;
+  const coinId = req.header('CoinId');
 
   try{
     let result = {
