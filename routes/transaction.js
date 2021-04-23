@@ -76,6 +76,7 @@ router.post('/', async function(req, res, next){
 
   try{
     const transaction = {
+      id: req.body.id,
       coin: req.body.coinId,
       amount: req.body.amount,
       price: req.body.price,
