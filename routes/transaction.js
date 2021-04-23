@@ -124,15 +124,24 @@ router.get('/assets_in_single', async function(req, res, next){
     const docs = balanceQuerySnapshot.docs;
     let totalRow = 0;
 
+    buy=0, sell=0;
+
     for(let doc of docs){
-      if(doc.data().id == coinId && doc.data().type == "buy"){
+      if(doc.data().id == coinId){
         let subTotal = 0;
         subTotal = doc.data().price * doc.data().amount;
-        result.data['amount'] += doc.data().amount;
+        if(doc.data().type == 'buy'){
+          buy += doc.data().amount
+        }
+
+        if(doc.data().type == 'sell'){
+          sell += doc.data().amount
+        }
         result.data['totalAsset'] += subTotal;
       };
     }
 
+    result.data['amount'] += buy - sell;
     result.data['avgBuy'] = result.data['totalAsset'] / result.data['amount'];
 
     res.status(201).json(result);
