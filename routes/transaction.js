@@ -3,43 +3,10 @@ var router = express.Router();
 var fire = require('../config/firebase');
 var bodyparser = require('body-parser');
 var request = require('request-promise');
+const { route } = require('./coin');
 var db = fire.firestore();
 
 router.use(bodyparser.json());
-
-router.get('/current', async function(req, res, next){
-  const userId = req.header('UserId');
-
-  try{
-    let topup = 0, withdraw = 0;
-    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("balances").get();
-    const docs = balanceQuerySnapshot.docs;
-
-    for(let doc of docs){
-      if(doc.data().type == 'topup'){
-        topup += doc.data().amount;
-      }
-
-      if(doc.data().type == 'withdraw'){
-        withdraw += doc.data().amount;
-      }
-    }
-
-    result = {
-      top_up: topup,
-      withdraw: withdraw,
-      current: topup - withdraw
-    }
-
-    res.status(201).json(result);
-  }catch(error){
-    result = {
-      status: "error",
-      error: error
-    }
-    res.status(400).send(result);
-  }
-});
 
 router.get('/history', async function(req, res, next){
   const userId = req.header('UserId');
@@ -70,6 +37,39 @@ router.get('/history', async function(req, res, next){
     res.status(400).send(result);
   }
 });
+
+router.get('/history_by_crypto', async function(req, res, next){
+  const userId = req.header('UserId');
+  const coinId = req.header('coinId');
+
+  try{
+    let result = {
+      status : "success",
+      data : []
+    };
+    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
+    const docs = balanceQuerySnapshot.docs;
+
+    for(let doc of docs){
+      if(doc.data().id == coinId){
+        item = {
+          id: doc.id,
+          transaction: doc.data()
+        }
+
+        result.data.push(item);
+      }
+    }
+
+    res.status(201).json(result);
+  }catch(error){
+    result = {
+      status: "error",
+      error: error
+    }
+    res.status(400).send(result);
+  }
+})
 
 router.post('/', async function(req, res, next){
   const userId = req.header('UserId');
@@ -104,6 +104,46 @@ router.post('/', async function(req, res, next){
     res.status(400).send(result);
   }
  
+});
+
+router.get('/assets_in_single', async function(req, res, next){
+  const userId = req.header('UserId');
+  const coinId = 1;
+
+  try{
+    let result = {
+      status : "success",
+      data : {
+        amount : 0,
+        totalAsset : 0,
+        avgBuy : 0
+      }
+    };
+    
+    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
+    const docs = balanceQuerySnapshot.docs;
+    let totalRow = 0;
+
+    for(let doc of docs){
+      if(doc.data().id == coinId){
+        let subTotal = 0;
+        totalRow += 1;
+        subTotal = doc.data().price * doc.data().amount;
+        result.data['amount'] += doc.data().amount;
+        result.data['totalAsset'] += subTotal;
+      };
+    }
+
+    result.data['avgBuy'] = result.data['totalAsset'] / totalRow;
+
+    res.status(201).json(result);
+  }catch(error){
+    result = {
+      status: "error",
+      error: error
+    }
+    res.status(400).send(result);
+  }
 });
 
 module.exports = router;
