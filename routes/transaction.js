@@ -154,4 +154,55 @@ router.get('/assets_in_single', async function(req, res, next){
   }
 });
 
+router.get('/my_coin', async function(req, res, next){
+  const userId = req.header('UserId');
+
+  try{
+    let result = {
+      status : "success",
+      data : {
+        coin : []
+      }
+    };
+    let a = [];
+    
+    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
+    const docs = balanceQuerySnapshot.docs;
+
+    for(let doc of docs){
+
+      id = doc.data().id;
+
+      if(result.data.coin.length < 1){
+        result.data.coin.push(id);
+      }
+      countCheck = 0;
+      amount = doc.data().amount;
+      for(let i = 0; i < result.data.coin.length; i++){
+        let coin = result.data.coin;
+        if(coin[i].id == id){
+          countCheck += 1;
+          amount += coin[i].amount
+        }
+      }
+      if(countCheck == 0){
+        result.data.coin.push({
+          id: id, 
+          coin: doc.data().coin,
+          total: amount
+        });
+
+      }
+    }
+
+    res.status(201).json(result);
+  }catch(error){
+    result = {
+      status: "error",
+      error: error
+    }
+    res.status(400).send(result);
+  }
+});
+
 module.exports = router;
