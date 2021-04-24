@@ -164,7 +164,6 @@ router.get('/my_coin', async function(req, res, next){
         coin : []
       }
     };
-    let a = [];
     
     const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
     const docs = balanceQuerySnapshot.docs;
@@ -173,9 +172,6 @@ router.get('/my_coin', async function(req, res, next){
 
       id = doc.data().id;
 
-      if(result.data.coin.length < 1){
-        result.data.coin.push(id);
-      }
       countCheck = 0;
       amount = doc.data().amount;
       for(let i = 0; i < result.data.coin.length; i++){
