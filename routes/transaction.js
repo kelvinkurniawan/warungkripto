@@ -129,15 +129,15 @@ router.get('/assets_in_single', async function(req, res, next){
     for(let doc of docs){
       if(doc.data().id == coinId){
         let subTotal = 0;
-        subTotal = doc.data().price * doc.data().amount;
+        subTotal += doc.data().price * doc.data().amount;
         if(doc.data().type == 'buy'){
           buy += doc.data().amount
         }
 
         if(doc.data().type == 'sell'){
-          sell += doc.data().amount
+          sell += doc.data().amount;
         }
-        result.data['totalAsset'] += subTotal;
+        result.data['totalAsset'] = subTotal;
       };
     }
 
