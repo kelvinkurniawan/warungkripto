@@ -141,8 +141,8 @@ router.get('/assets_in_single', async function(req, res, next){
       };
     }
     result.data['amount'] = buy - sell;
-    result.data['totalAsset'] = totalBuy - totalSell;
-    result.data['avgBuy'] = result.data['totalAsset'] / result.data['amount'];
+    result.data['totalAsset'] = totalBuy;
+    result.data['avgBuy'] = result.data['totalAsset'] / buy;
 
     res.status(201).json(result);
   }catch(error){
