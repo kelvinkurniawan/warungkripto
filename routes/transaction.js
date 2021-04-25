@@ -16,7 +16,7 @@ router.get('/history', async function(req, res, next){
       status : "success",
       data : []
     };
-    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").get();
+    const balanceQuerySnapshot = await db.collection('users').doc(userId).collection("transactions").orderBy("date", "desc").get();
     const docs = balanceQuerySnapshot.docs;
 
     for(let doc of docs){
