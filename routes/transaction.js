@@ -128,6 +128,7 @@ router.get('/assets_in_single', async function(req, res, next){
     totalBuy=0, totalSell = 0;
 
     for(let doc of docs){
+      console.log(doc.data().price);
       if(doc.data().id == coinId){
         if(doc.data().type == 'buy'){
           buy += doc.data().amount
@@ -142,7 +143,7 @@ router.get('/assets_in_single', async function(req, res, next){
     }
     result.data['amount'] = buy - sell;
     result.data['totalAsset'] = totalBuy;
-    result.data['avgBuy'] = result.data['totalAsset'] / buy;
+    result.data['avgBuy'] = totalBuy / buy;
 
     res.status(201).json(result);
   }catch(error){
@@ -172,22 +173,43 @@ router.get('/my_coin', async function(req, res, next){
 
       id = doc.data().id;
 
+      let amount = 0;
       countCheck = 0;
-      amount = doc.data().amount;
+      if(doc.data().type == "buy"){
+        amount = doc.data().amount
+      }
+      if(doc.data().type == "sell"){
+        amount = -(doc.data().amount)
+      }
+      buy = 0; sell = 0; total = 0;
       for(let i = 0; i < result.data.coin.length; i++){
         let coin = result.data.coin;
         if(coin[i].id == id){
           countCheck += 1;
-          amount += coin[i].amount
+          amount += coin[i].total
         }
       }
-      if(countCheck == 0){
+
+      if(countCheck == 0 && amount != 0){
+        console.log(amount);
         result.data.coin.push({
           id: id, 
           coin: doc.data().coin,
           total: amount
         });
+      }
+      
+      if(countCheck != 0){
+        console.log("sec " + amount);
+        for(let i = 0; i < result.data.coin.length; i++){
+          if(id == result.data.coin[i].id){
+            result.data.coin[i].total = amount;
+          }
 
+          if(id == result.data.coin[i].id && amount == 0){
+            result.data.coin.splice(i,i)
+          }
+        }
       }
     }
 
